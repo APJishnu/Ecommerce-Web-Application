@@ -5,9 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const exphbs=require('express-handlebars');
 const { db }= require('./config/connection');
-const session = require('express-session')
+const session = require('express-session');
 
-
+const MongoStore = require('connect-mongo');
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
@@ -32,12 +32,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
-  secret: 'Shopping Cart',
-  resave: true,
-  saveUninitialized: true,
-  cookie: { maxAge: 600000 }})
-
-  );
+    secret: "shoppingCart1234567",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 600000 },
+    store: new MongoStore({ 
+      mongoUrl: 'mongodb://localhost:27017/sessionstore',
+      ttl: 14 * 24 * 60 * 60, // 2 weeks in seconds
+    }),
+  })
+);
 
 
 
