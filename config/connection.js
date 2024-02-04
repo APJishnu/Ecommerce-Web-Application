@@ -10,7 +10,9 @@ mongoose.connect(uri, {
   
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  
+  serverSelectionTimeoutMS: 30000, // Increase server selection timeout
+  socketTimeoutMS: 45000, // Increase socket timeout
+
 });
 
 const db = mongoose.connection;
