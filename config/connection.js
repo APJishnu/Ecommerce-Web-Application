@@ -8,6 +8,9 @@ const uri = 'mongodb://localhost:27017/ShoppingCart'; // Replace with your Mongo
 
 mongoose.connect(uri, {
   
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  
 });
 
 const db = mongoose.connection;
