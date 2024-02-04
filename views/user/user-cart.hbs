@@ -1,0 +1,150 @@
+<style>
+  /* Media query for smaller screens (mobile) */
+  @media (max-width: 767.98px) {
+
+    .card-body {
+      padding: 1.25rem;
+      /* Adjust card body padding for smaller screens */
+    }
+
+    .float-end {
+      text-align: center;
+      /* Center align the "Proceed to Pay" button */
+    }
+
+    .proceed-to-pay-button {
+      width: auto;
+      /* Make the button full-width on smaller screens */
+      margin-top: 20px;
+      /* Add some margin for better spacing */
+    }
+  }
+</style>
+
+
+<section class="bg-light" style="height:100vh">
+  <div class="container h-auto py-5">
+    <div class=" card row d-flex justify-content-center align-items-center h-100 mt-4 rounded-4" >
+      <div class="col-10">
+
+        {{#if products}}
+        <div class="d-flex justify-content-between mt-5 mb-4">
+          <h3 class="font-weight-bold" style="font-family: 'Arial Black', sans-serif;">Your Cart</h3>
+          <div>
+            <p class="mb-0"><span class="text-muted">Sort by:</span> <a href="#!" class="text-body">price <i
+                  class="fas fa-angle-down mt-1"></i></a></p>
+          </div>
+        </div>
+
+        {{!-- Your existing Handlebars content --}}
+
+        {{#each products}}
+        <div class="mb-4" >
+          <div class=" card-body p-5">
+            <div class="row d-flex justify-content-between align-items-center">
+              <div class="col-md-2 col-lg-2 col-xl-2">
+                <img src="img/{{this.product.image}}" style="height:70px;width:70px;" class="img-fluid rounded-3"
+                  alt="Product Image">
+              </div>
+              <div class="col-md-3 col-lg-3 col-xl-3">
+                <p class="lead fw-normal mb-2">{{this.product.name}}</p>
+                <p><span class="text-muted"></span>{{this.product.category}}</p>
+              </div>
+              <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                <button class="btn btn-link px-2"
+                  onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user._id}}',-1)">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <input id="{{this.product._id}}" min="0" name="quantity" value="{{this.quantity}}"
+                  class="form-control form-control-sm text-center" readonly />
+                <button class="btn btn-link px-2"
+                  onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user._id}}',1)">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                <h5 class="mb-0 font-weight-bold">
+                  <span style="font-family: Arial, sans-serif;">&#x20B9;</span>{{this.product.price}}
+                </h5>
+              </div>
+              <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                <a class="text-danger" onclick="removeItem('{{this._id}}','{{this.product._id}}')">
+                  <i class="fas fa-trash fa-lg"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+      
+        {{/each}}
+
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="fw-normal mb-0 text-black font-weight-bold" style="font-family: 'Arial Black', sans-serif;">TOTAL: <span class="small">&#x20B9;</span><span class="small" id="total">{{#if totalAmount}}{{totalAmount}}{{else}}0{{/if}}</span></h3>
+
+          <a href="/order-products" class="btn btn-warning btn-lg proceed-to-pay-button">Proceed to Pay</a>
+        </div>
+        {{else}}
+        <h1 class="text-center mt-5 text-muted p-5">Your Shopping Bag is Empty.</h1>
+        <div class="text-center text-muted mb-5">
+          <a href="/" class="btn btn-outline-secondary rounded-4">Go to Home</a>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function changeQuantity(cartId, proId, userId, count) {
+    let quantity = parseInt(document.getElementById(proId).value);
+    count = parseInt(count);
+
+    $.ajax({
+      url: '/change-product-quantity',
+      data: {
+        cart: cartId,
+        product: proId,
+        user: userId,
+        count: count,
+        quantity: quantity,
+      },
+      method: 'post',
+      success: (response) => {
+        if (response.removeProduct) {
+          alert("Product removed from cart");
+          location.reload();
+        } else {
+          document.getElementById(proId).value = quantity + count;
+          document.getElementById('total').innerHTML = response.total;
+        }
+      },
+    });
+  }
+
+  function removeItem(cartId, proId) {
+    $.ajax({
+      url: '/remove-cartItem',
+      data: {
+        cart: cartId,
+        product: proId,
+      },
+      method: 'post',
+      success: (response) => {
+        if (response.status) {
+          // Remove the card corresponding to the removed item
+          $(`.card[data-cart-item-id="${cartId}"][data-product-id="${proId}"]`).remove();
+          alert("Product removed from cart");
+          location.reload();
+        } else {
+          console.error('Failed to remove item from the cart.');
+        }
+      },
+      error: (error) => {
+        console.error('Error occurred while removing item from the cart.', error);
+      },
+    });
+  }
+
+</script>

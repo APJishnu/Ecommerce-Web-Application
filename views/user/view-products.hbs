@@ -1,0 +1,49 @@
+<style>
+
+   p {
+  margin-bottom: 2px; /* Adjust this value as needed */
+}
+section{
+  
+}
+
+</style>
+
+  <section class="p-5 main-content">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
+        {{#each products}}
+        <div class="col mb-4">
+          <div class="card h-100" style="box-shadow:rgb(255, 255, 0) 0px 0px 1px 0px;border-radius:20px">
+            <div class="img d-flex justify-content-center align-items-center mt-3 p-4">
+              <img class="card-img-top" src="./img/{{this.image}}" alt="Product Image" style="height: 125px; width: 50%">
+            </div>
+            <div class="card-body p-3">
+              <h5 class="card-title " style="font-weight: bold;font-size:large; margin-bottom: 2px;">{{this.name}}</h5>
+              <p class="card-text" style="font-size:13px;">{{this.description}}</p>
+              <p style="font-weight: bold;color:rgb(10, 10, 218)">&#x20B9;{{this.price}}</p>
+                <div class="ratings ">
+        {{#if this.ratings.length}}
+         
+          <p style="font-size:small">{{this.ratings.length}} reviews</p>
+          <div class="average-rating" data-average="{{this.averageRating}}"></div>
+        {{else}}
+          <p style="font-size:x-small">No reviews yet</p>
+           <div class="average-rating" data-average="{{this.averageRating}}"></div>
+        {{/if}}
+      </div>
+              <button onclick="addToCart(this, '{{this._id}}')" class="btn  col-6 mt-3 p-1 " style="border-radius:0px;box-shadow:0px 0px 1px 0px">Add to cart</button>
+              <a href="/order-products?productId={{this._id}}" class="btn btn-warning col-6 mt-3 p-1 float-end" style="border-radius:0px;box-shadow:rgb(221, 183, 15) 0px 0px 1px 0px">Buy Now</a>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{#if showAllproducts}}
+
+    <div class="text-center"><a href="/all-products" class="btn btn btn-outline-warning rounded-4 mt-3" >All Products</a></div>
+    {{/if}}
+  </section>
+
+

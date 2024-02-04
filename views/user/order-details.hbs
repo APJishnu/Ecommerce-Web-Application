@@ -1,0 +1,59 @@
+
+
+  <section>
+  <div class="container">
+    <div class="table-responsive mt-5">
+      
+      
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">name</th>
+            <th scope="col">Address</th>
+            <th scope="col">mobile</th>
+            <th scope="col">Amount</th>
+            <th scope="col">payment</th>
+            <th scope="col">status</th>
+        
+          </tr>
+        </thead>
+         
+        <tbody>
+         {{#each orderDetails}}
+          <tr>
+            
+            <td><p class="mt-2">{{this.date}}</p></td>
+            <td><p class="mt-2">{{this.deliveryDetails.name}}</p></td>
+            <td><p class="mt-2">{{this.deliveryDetails.address}}</p></td>
+            <td><p class="mt-2">{{this.deliveryDetails.pincode}}</p></td>
+            <td><p class="mt-2">{{this.deliveryDetails.mobile}}</p></td>
+            <td><p class="mt-2">&#x20B9;{{this.totalAmount}}</p></td>
+            <td><p class="mt-2">{{this.paymentMethod}}</p></td>
+            <td><p class="mt-2">{{this.status}}</p></td>
+            <td><a href="/list-products/{{this._id}}" class="btn btn-primary">View Products</a></td>
+
+          </tr>
+           {{/each}}
+          
+        </tbody>
+     
+
+      </table>
+    
+     
+     
+
+    </div>
+      
+  </div>
+</section>
+
+<style>
+  @media (max-width: 576px) {
+    .table-responsive {
+      overflow-x: auto;
+    }
+  }
+</style>
+

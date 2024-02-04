@@ -1,0 +1,176 @@
+
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <style>
+        /* Add your custom styles here */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .navbar {
+      background: #fdfeff;
+    }
+    .navbar-nav .nav-link {
+      color: #191818c9 !important; /* Set the text color to white */
+    }
+    .navbar-brand img {
+      height: 40px; /* Adjust as needed */
+    }
+    .navbar .nav-item {
+      margin-left: 15px; /* Adjust spacing between items */
+    }
+    .navbar .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 6px; /* Adjust spacing between icon and text */
+      text-decoration: none;
+      color: #ffffff;
+      font-weight: bold; /* Adjust font weight */
+      position: relative;
+    }
+    .navbar .nav-link::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 2px;
+      background-color: transparent; /* Initially transparent */
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: width 0.3s, background-color 0.3s; /* Transition both width and background-color */
+    }
+    .navbar .nav-item.active .nav-link::after {
+      width: calc(100% - 10px); /* Expand width on hover */
+      background-color: #007bff; /* Change background-color on hover */
+    }
+    .navbar .nav-link .badge {
+      position: absolute;
+      top: 30%;
+      right: -2px;
+      transform: translate(0%, -50%);
+    }
+
+    @media (max-width: 767.98px) {
+      .navbar .nav-link .badge {
+        left: 65%; /* Adjust the badge position for smaller screens */
+      }
+      .navbar-nav {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+      }
+      .navbar-nav .nav-item {
+        margin: 0;
+        padding: 10px;
+        border-bottom: none;
+        font-size: small;
+      }
+      .navbar .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        display: none;
+        float: left;
+        min-width: 10rem;
+        padding: 0.5rem 0;
+        margin: 0.125rem 0 0;
+        font-size: 1rem;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-color: #ffffff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 0.25rem;
+      }
+      .navbar .dropdown-menu.show {
+        display: block;
+      }
+      .navbar .dropdown-menu .dropdown-item {
+        display: block;
+        width: auto;
+        clear: both;
+        float: none;
+        text-align: left;
+      }
+    }
+  </style>
+
+  <nav class="card navbar navbar-expand-md navbar-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/"><img style="width:15vh;height:15vh " src="/images/shoppingLogo.png" alt="Logo"></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+       
+<!-- user-header.hbs -->
+
+      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+        <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+      </form>
+
+
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/all-products" id="navbarDropdown" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">Products</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Mobiles</a>
+              <a class="dropdown-item" href="#">mobile cover</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/all-products">All Products</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/cart">
+              <ion-icon name="cart-outline" style="font-size: 30px;"></ion-icon>
+              <span id="cart-count" class="badge badge-pill badge-danger">{{count}}</span>
+            </a>
+          </li>
+         {{#if user}}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false">Orders</a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">  
+            <a class="dropdown-item" href="">Order Products</a>
+            <a class="dropdown-item" href="/order-details">Order History</a>
+           
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false"><i class="fas fa-user"></i> {{user.name}}</a>
+           <div class="dropdown-menu" aria-labelledby="navbarDropdown">  
+            <a class="dropdown-item" href="/login">Settings</a>
+            <a class="dropdown-item" href="/logout">Logout</a>
+           
+          </div>
+        </li>
+        {{else}}
+      
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="/login" id="navbarDropdown" role="button" data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false"><i class="fas fa-user"></i> Account</a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">  
+            <a class="dropdown-item" href="/login">Settings</a>
+            <a class="dropdown-item" href="/order-details">Login</a>
+           
+          </div>
+        </li>
+        {{/if}}
+      </ul>
+    </div>
+  </nav>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Include jQuery library -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

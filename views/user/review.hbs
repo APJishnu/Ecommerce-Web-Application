@@ -1,0 +1,105 @@
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .rating {
+      unicode-bidi: bidi-override;
+      direction: rtl;,
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .rating > span {
+      display: inline-block;
+      position: relative;
+      width: 1.1em;
+      cursor: pointer;
+      font-size: 30px; 
+    }
+
+    .rating > span:hover:before,
+    .rating > span:hover ~ span:before {
+      content: "\2605";
+      position: absolute;
+      
+    }
+
+    #review {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+    } 
+  </style>
+<section class="p-5 bg-light">
+  <div class="container">
+    <h1>Rate Product</h1>
+    <form id="ratingForm" action="/submit-rating/{{this.proId}}" method="post">
+      <div class="rating">
+        <span data-rating="5">&#9733;</span>
+        <span data-rating="4">&#9733;</span>
+        <span data-rating="3">&#9733;</span>
+        <span data-rating="2">&#9733;</span>
+        <span data-rating="1">&#9733;</span>
+        <input type="hidden" name="rating" id="selected-rating">
+      </div>
+      <textarea id="review" name="review" rows="4" placeholder="Enter your review..." required></textarea>
+      <button type="submit">Submit Rating</button>
+    </form>
+  </div>
+  </section>
+
+  <script>
+    const stars = document.querySelectorAll('.rating > span');
+    const ratingInput = document.getElementById('selected-rating');
+    const ratingForm = document.getElementById('ratingForm');
+
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        const rating = star.getAttribute('data-rating');
+        ratingInput.value = rating;
+        highlightStars(rating);
+      });
+    });
+
+    function highlightStars(selectedRating) {
+      stars.forEach(star => {
+        const rating = star.getAttribute('data-rating');
+        if (rating <= selectedRating) {
+          star.style.color = 'yellow';
+        } else {
+          star.style.color = 'black';
+        }
+      });
+    }
+
+    
+  </script>
+</body>
+</html>

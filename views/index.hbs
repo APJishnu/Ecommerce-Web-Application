@@ -1,0 +1,58 @@
+placeOrder: (order,userId,products,total,productId)=>{
+  return new Promise(async(resolve,reject)=>{
+    console.log(order,products,total)
+    if(productId){
+      let product = await Product.findById(productId);
+      
+      let price = parseInt(product.price);
+      let status  = order['PaymentMethod'] === 'COD'?'placed':'pending'
+    let orderObj = new Order({
+      deliveryDetails:{
+          name:order.Name,
+          mobile:order.Mobile,
+          address:order.Address,
+          pincode:order.Pincode,
+      },
+      userId:ObjectId.createFromHexString(userId),
+      paymentMethod:order['PaymentMethod'],
+      products: { item:new ObjectId(productId), quantity: 1 },
+      totalAmount:price,
+      status:status,
+      date: new Date()
+    });
+
+    orderObj.save().then(async(response)=>{
+      resolve(response._id)
+    })
+
+    }else{
+
+      let status  = order['PaymentMethod'] === 'COD'?'placed':'pending'
+    let orderObj = new Order({
+      deliveryDetails:{
+          name:order.Name,
+          mobile:order.Mobile,
+          address:order.Address,
+          pincode:order.Pincode,
+      },
+      userId:ObjectId.createFromHexString(userId),
+      paymentMethod:order['PaymentMethod'],
+      products:products,
+      totalAmount:total,
+      status:status,
+      date: new Date()
+    });
+
+    orderObj.save().then(async(response)=>{
+
+     await Cart.deleteOne({user:userId})
+     console.log("place order response",response._id)
+      resolve(response._id)
+    })
+
+    }
+
+    
+})
+
+},

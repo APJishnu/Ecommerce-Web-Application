@@ -1,0 +1,155 @@
+
+
+<section class="p-5">
+  <div class="container">
+    <div class="row">
+      <div class="card col-md-6 d-flex align-items-stretch p-4" style="box-shadow:inset rgb(182, 182, 255) 0px 0px 3px 0px; border-radius:25px">
+        <h2 class="text-center">Enter Delivery Details</h2>
+        <form action="" id="checkout-form">
+          <div class="mb-2">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" name="Name">
+          </div>
+          <div class="mb-2">
+            <label for="category" class="form-label">Mobile</label>
+            <input type="text" class="form-control" name="Mobile">
+          </div>
+          <div class="mb-2">
+            <label for="price" class="form-label">Pincode</label>
+            <input type="text" class="form-control" name="Pincode">
+          </div>
+          <div class="mb-2">
+            <label for="description" class="form-label">Address</label>
+            <textarea class="form-control" name="Address" rows="3"></textarea>
+          </div>
+
+      </div>
+      <div class="col-md-6 d-flex" >
+        <div class="card p-4 w-100" style="box-shadow:inset rgb(182, 182, 255) 0px 0px 3px 0px; border-radius:25px">
+          <div class="card-body">
+            {{#if product}}
+            <h5 class="card-title">Total: &#x20B9;{{product.price}}</h5>
+            {{else}}
+            <h5 class="card-title">Total: &#x20B9;{{result}}</h5>
+            {{/if}}
+            <hr>
+            <span class="span mt-2">Payment Method</span>
+            <div class="form-check mb-1 mt-3">
+              <input class="form-check-input" type="radio" name="PaymentMethod" id="COD" value="COD">
+              <label class="form-check-label" for="COD">
+                COD
+              </label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="PaymentMethod" id="ONLINE" value="ONLINE">
+              <label class="form-check-label" for="ONLINE">
+                Online Payment
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary rounded-3">Buy Now</button>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Bootstrap modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="successModalLabel">Success!</h5>
+        <a class="btn btn-primary" type="button" class="close" data-dismiss="modal" aria-label="Close" href="/">
+          <span aria-hidden="true">&times;</span>
+        </a>
+      </div>
+      <div class="modal-body">
+        Your order has been placed successfully. Do you want to enter now?
+      </div>
+      <div class="modal-footer">
+        <a type="button" href="/order-details" class="btn btn-primary">Enter Now</a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(() => {
+    $('#successModal').on('hide.bs.modal', () => {
+      window.location.href = '/'; // Navigate to the home page
+    });
+
+    $('#checkout-form').submit((e) => {
+      e.preventDefault();
+      $.ajax({
+        url: '/order-products?productId={{product._id}}',
+        method: 'post',
+        data: $('#checkout-form').serialize(),
+        success: (response) => {
+
+          if (response.codSuccess) {
+            $('#successModal').modal('show');
+          } else {
+            razorpayPayment(response);
+
+          }
+        }
+      });
+    });
+    function razorpayPayment(order) {
+      var options = {
+        "key": "rzp_test_37TZNY8cnWgUm8", // Enter the Key ID generated from the Dashboard
+        "amount":order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "CloudELeven", //your business name
+        "description": "Test Transaction",
+        "image": "https://example.com/your_logo",
+        "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response) {
+          alert(response.razorpay_payment_id);
+          alert(response.razorpay_order_id);
+          alert(response.razorpay_signature);
+
+          verifyPayment(response, order);
+        },
+        "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+          "name": "Jishnu AP", //your customer's name
+          "email": "apjishnu111@gmail.com",
+          "contact": "9000090000"  //Provide the customer's phone number for better conversion rates 
+        },
+        "notes": {
+          "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+          "color": "#3399cc"
+        }
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+    }
+  });
+
+  function verifyPayment(payment, order) {
+    $.ajax({
+      url: '/verify-payment',
+      data: {
+        payment,
+        order
+      },
+      method: 'post',
+      success:(response)=>{
+        if(response.status){
+          $('#successModal').modal('show');
+        }else{
+          alert("Payment Failed")
+        }
+      }
+    })
+  }
+</script>

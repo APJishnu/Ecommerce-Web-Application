@@ -1,0 +1,54 @@
+<section class="" style="background-color: #eee; height:100vh">
+  <div class="container h-100 py-5">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-10">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="fw-normal mb-0 text-black">Ordered Products</h3>
+          <div>
+            <p class="mb-0"><span class="text-muted">Sort by:</span> <a href="#!" class="text-body">price <i
+                  class="fas fa-angle-down mt-1"></i></a></p>
+          </div>
+        </div>
+
+        {{!-- Your existing Handlebars content --}}
+        {{#if orderedProducts}}
+          {{#each orderedProducts}}
+            <div class="card rounded-3 mb-4">
+              <div class="card-body p-4">
+                <div class="row d-flex justify-content-between align-items-center">
+                  <div class="col-md-2 col-lg-2 col-xl-2">
+                    <img src="/img/{{this.product.image}}" style="height:100px;width:60px;" class="img-fluid rounded-3" alt="Product Image">
+                  </div>
+                  <div class="col-md-3 col-lg-3 col-xl-3">
+                    <p class="lead fw-normal mb-2">{{this.product.name}}</p>
+                    <p><span class="text-muted"></span>{{this.product.category}}</p>
+                  </div>
+                  <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                    <p>{{this.product.description}}</p>
+                  </div>
+                  <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                    <h5 class="mb-0">&#x20B9;{{this.product.price}}</h5>
+                  </div>
+                  
+                  <div class="col-md-1 col-lg-1 col-xl-1 text-end mr-2">
+                   <a href="/review/{{this.product._id}}" class="btn">review</a>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          {{/each}}
+         
+    
+        
+            {{else}}
+          <h1 class="text-center text-muted my-4">No item ordered</h1>
+        {{/if}}
+
+
+        
+      </div>
+    </div>
+  </div>
+</section>

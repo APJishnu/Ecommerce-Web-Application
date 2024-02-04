@@ -1,0 +1,70 @@
+
+  <!-- Include Bootstrap CSS (for styling) -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Include DataTables CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+  <section>
+    <div class="container mt-4">
+      <div class="row justify-content-between mb-2">
+        <div class="col-md-6">
+          <h1>Products</h1>
+        </div>
+        <div class="col-md-6 text-right">
+          <a href="/admin/add-products" class="btn btn-success">Add Product</a>
+        </div>
+      </div>
+      <table id="dataTable" class="display" style="width:100%">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Name</th>
+            <th scope="col">Category</th>
+            <th scope="col">Price</th>
+            <th scope="col">Description</th>
+            <th scope="col">Image</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each products}}
+          <tr>
+            <th scope="row">{{inc @index}}</th>
+            <td>{{this.name}}</td>
+            <td>{{this.category}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.description}}</td>
+            <td><img style="width: 50px; height: 50px" src="../img/{{this.image}}" alt="image"></td>
+            <td>
+              <a href="/admin/edit-products/{{this._id}}" class="btn btn-primary">Edit</a>
+              <a href="/admin/delete-products/{{this._id}}" class="btn btn-danger">Delete</a>
+              {{#if delfalse}}
+              <p class="error">{{delfalse}}</p>
+              {{/if}}
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include DataTables JS -->
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <!-- Include Bootstrap JS (for responsive behavior) -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    jQuery.noConflict();
+    (function($) {
+      // Use $ for jQuery code here
+      $('#dataTable').DataTable({
+        "dom": '<"row justify-content-between"lfB>rtip',
+        "buttons": [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+      });
+    })(jQuery);
+  </script>
+
