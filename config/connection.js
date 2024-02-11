@@ -3,15 +3,14 @@
 const mongoose = require('mongoose');
 const { array } = require('../helpers/multer');
 const ObjectId=mongoose.Types.ObjectId;
+require('dotenv').config();
 
-const uri = 'mongodb://localhost:27017/ShoppingCart'; // Replace with your MongoDB connection URI
 
-mongoose.connect(uri, {
+console.log(process.env.MONGODB_URI);
+
+
+mongoose.connect(process.env.MONGODB_URI, {
   
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 30000, // Increase server selection timeout
-  socketTimeoutMS: 45000, // Increase socket timeout
 
 });
 
