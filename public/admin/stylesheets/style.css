@@ -1,0 +1,30 @@
+/* Style for the quantity input */
+.form-control.text-center {
+    width: 50px; /* Adjust width as needed */
+    text-align: center; /* Center-align the text */
+    border: none; /* Remove border */
+    background-color: transparent; /* Make background transparent */
+    font-weight: bold; /* Make text bold */
+  }
+  
+  /* Style for the minus button */
+  .btn-outline-secondary.minus-button {
+    display: none; /* Initially hide the minus button */
+  }
+  
+
+/* Style the Toast to be fixed at a specific location on the screen */
+.toast {
+  position: fixed;
+  bottom: 50px; /* Adjust as needed */
+  left: 20px; /* Adjust as needed */
+  z-index: 1050; /* Adjust as needed */
+}
+
+
+
+
+
+
+
+

@@ -1,4 +1,5 @@
 const { Login } = require('../config/connection');
+const {AdminLogin} = require('../config/connection');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -59,7 +60,30 @@ module.exports={
     console.error(error);
     callback(null, "An error occurred during login"); // Error occurred
   }
-}
+},
+
+
+checkAdmin: async (admindata, callback) => {
+  try {
+    const check = await AdminLogin.findOne({ email: admindata.email });
+
+    if (check) {
+      const isadminPasswordValid = await bcrypt.compare(admindata.pw, check.password);
+      if (isadminPasswordValid) {
+        callback(check, null);
+      } else {
+        let msg = "Incorrect password";
+        callback(null, msg);
+      }
+    } else {
+      let msg = "Incorrect Email Address";
+      callback(null, msg);
+    }
+  } catch (error) {
+    console.error(error);
+    callback(error);
+  }
+},
 
 
 

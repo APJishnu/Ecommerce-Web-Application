@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var productHelper=require('../helpers/product-helpers');
+const adminLogin = require('../helpers/login-helpers');
 const upload = require('../helpers/multer');
 
 
@@ -108,9 +109,35 @@ router.post('/products/add-rating/:productId', async (req, res) => {
 });
 
 
-router.get('adminLogin',(req,res)=>{
+
+router.get('/adminLogin', async (req, res) => {
+
+  res.render('admin/admin-login', { admin: true })
+});
+
+router.post('/adminLogin', async (req, res) => {
+  const admindata = req.body;
+
+  if(admindata.pw === null){
+         res.send('<script>alert("An error occurred during login. Please try again later."); window.location.href="/admin/adminLogin"</script>');
+  }else{
+
+    await adminLogin.checkAdmin(admindata, (result, error) => {
+      if (result) {
+        req.session.adminLoggin = true;
+        req.session.admin = admindata;
+        res.redirect('/admin/');
+      } else {
+        if (error) {
+          console.error(error);
+          res.send('<script>alert("' + error + '"); window.location.href="/admin/adminLogin"</script>');
+        } else {
+          res.send('<script>alert("An error occurred during login. Please try again later."); window.location.href="/admin/adminLogin"</script>');
+        }
+      }
+    });
+  }
 
   
-})
-
+});
 module.exports = router;  

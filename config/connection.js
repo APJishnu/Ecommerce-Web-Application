@@ -169,11 +169,43 @@ const orderSchema = new mongoose.Schema({
   date:String,
 });
 
+const AdminLoginSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    default: 'admin@gmail.com' // Default email value
+  },
+  password: {
+    type: String,
+    required: true,
+    default: 'admin@123' // Default password value
+  }
+});
+
+
+
+// const pw = await bcrypt.hash('admin@123',10)
+// const newAdminLogin = new AdminLogin({
+//   email: 'admin@gmail.com', // Custom email value
+//   password: pw // Custom password value
+// });
+
+// // Save the document to the database
+// newAdminLogin.save()
+//   .then((result) => {
+//     console.log('Document saved:', result);
+//   })
+//   .catch((error) => {
+//     console.error('Error saving document:', error);
+//   });
+
 
 
 const Product=new mongoose.model('Product',ProductSchema)
 const Login=new mongoose.model('Login',LoginSchema)
 const Cart=new mongoose.model('Cart',cartSchema)
 const Order=new mongoose.model('Order',orderSchema)
+const AdminLogin=new mongoose.model('AdminLogin',AdminLoginSchema);
 
-module.exports = { mongoose, db ,Product,Login ,Cart,Order};
+module.exports = { mongoose, db ,Product,Login ,Cart,Order,AdminLogin};
