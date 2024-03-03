@@ -26,7 +26,7 @@ router.get('/', async (req, res, next) => {
       count = await productHelper.getCartCount(req.session.user._id);
       console.log("cartcount", count);
     }
-    let products = await productHelper.getAllProductsPromise(allproducts);
+    let products = await productHelper.getAllProducts(allproducts);
     res.render('user/view-products', { admin: false, products, user, count, showAllproducts });
   } catch (error) {
     console.error('Error in / route:', error);
@@ -44,7 +44,7 @@ router.get('/all-products', async (req, res) => {
       count = await productHelper.getCartCount(req.session.user._id);
       console.log("cartcount", count);
     }
-    let products = await productHelper.getAllProductsPromise(allproducts);
+    let products = await productHelper.getAllProducts(allproducts);
     res.render('user/view-products', { admin: false, products, user, count, showAllproducts });
   } catch (error) {
     console.error('Error in /all-products route:', error);
