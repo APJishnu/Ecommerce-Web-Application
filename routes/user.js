@@ -7,108 +7,84 @@ const productHelpers = require('../helpers/product-helpers');
 const ObjectId = mongoose.Types.ObjectId;
 
 const verifyLogin = (req, res, next) => {
-
   if (req.session.loggedIn) {
-    next()
+    next();
   } else {
-
-    res.redirect('/login')
+    res.redirect('/login');
   }
 }
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
-  let user = req.session.user;
-  console.log(user);
-  let count = null;
-  let allproducts = false;
-  let showAllproducts = true;
-  if (req.session.user) {
-
-    count = await productHelper.getCartCount(req.session.user._id)
-    console.log("cartcount", count)
-
-  }
-  productHelper.getAllProducts(allproducts, (error, products) => {
-    if (error) {
-      // Handle the error, e.g., render an error page
-      res.render('error', { message: 'Error fetching products', error });
-    } else {
-
-      res.render('user/view-products', { admin: false, products, user, count, showAllproducts });
+  try {
+    let user = req.session.user;
+    console.log(user);
+    let count = null;
+    let allproducts = false;
+    let showAllproducts = true;
+    if (req.session.user) {
+      count = await productHelper.getCartCount(req.session.user._id);
+      console.log("cartcount", count);
     }
-  });
+    let products = await productHelper.getAllProductsPromise(allproducts);
+    res.render('user/view-products', { admin: false, products, user, count, showAllproducts });
+  } catch (error) {
+    console.error('Error in / route:', error);
+    res.render('error', { message: 'Error fetching products', error });
+  }
 });
 
 router.get('/all-products', async (req, res) => {
-  let user = req.session.user;
-  let count = null;
-  let allproducts = true;
-  let showAllproducts = false;
-  if (req.session.user) {
-
-    count = await productHelper.getCartCount(req.session.user._id)
-    console.log("cartcount", count)
-
-  }
-
-
-  productHelper.getAllProducts(allproducts, (error, products) => {
-    if (error) {
-      // Handle the error, e.g., render an error page
-      res.render('error', { message: 'Error fetching products', error });
-    } else {
-
-      res.render('user/view-products', { admin: false, products, user, count, showAllproducts });
+  try {
+    let user = req.session.user;
+    let count = null;
+    let allproducts = true;
+    let showAllproducts = false;
+    if (req.session.user) {
+      count = await productHelper.getCartCount(req.session.user._id);
+      console.log("cartcount", count);
     }
-  });
-
+    let products = await productHelper.getAllProductsPromise(allproducts);
+    res.render('user/view-products', { admin: false, products, user, count, showAllproducts });
+  } catch (error) {
+    console.error('Error in /all-products route:', error);
+    res.render('error', { message: 'Error fetching products', error });
+  }
 });
 
 
 
 router.get('/login', (req, res) => {
   if (req.session.loggedIn) {
-    res.redirect('/')
+    res.redirect('/');
   } else {
-
-
-    res.render('user/user-login', { admin:false,login:true,logErr: req.session.logErr });
-    req.session.logErr = false
+    res.render('user/user-login', { admin: false, login: true, logErr: req.session.logErr });
+    req.session.logErr = false;
   }
-})
-router.post('/signup', async (req, res) => {
-
-  try {
-
-    if(req.body.password===req.body.password_confirm){
-    // Add a new product
-    await loginHelper.SignUp(req.body, (result) => {
-
-      if(result === 'userExist'){
-     
-        res.send('<script>alert("User already exists. Please choose a different email or login."); window.location.href="/signup"</script>');
-    
-    
-      }else{
-        const _id = result;
-        res.redirect('/login'); // Redirect to view all products after adding
-      }
-
-    });
-  
-    }else{
-      res.send('<script>alert("Password Doesnt match."); window.location.href="/signup"</script>');
-    }
-
-    
-  } catch (error) {
-    console.error(error);
-    res.render('error', { message: 'Error adding product', error });
-  }
-
 });
 
+router.post('/signup', async (req, res) => {
+  try {
+    if (req.body.password === req.body.password_confirm) {
+      await loginHelper.SignUp(req.body, (result) => {
+        if (result === 'userExist') {
+          // Redirect with query parameter to indicate user exists
+          res.redirect('/signup?userExist=true');
+        } else {
+          // Redirect to login page after successful signup
+          res.redirect('/login');
+        }
+      });
+    } else {
+      // Redirect with query parameter to indicate password mismatch
+      res.redirect('/signup?passwordMismatch=true');
+    }
+  } catch (error) {
+    console.error(error);
+    // Render error view if an exception occurs
+    res.render('error', { message: 'Error adding product', error });
+  }
+});
 router.get('/signup', (req, res) => {
 
   res.render('user/user-signup',{admin:false,SignUp:true});

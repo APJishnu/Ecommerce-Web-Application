@@ -12,7 +12,7 @@ var instance = new Razorpay({
 });
 
 module.exports = {
-  addProduct: async (product, img, callback) => {
+  addProduct: async (product, img) => {
     try {
       const newProduct = new Product({
         name: product.name,
@@ -22,47 +22,30 @@ module.exports = {
         image: img.filename, // Use the filename of the uploaded image
       });
 
-      await newProduct.save();
-
-      const productId = newProduct._id.toString();
-      console.log("producthelpers",productId)
-      callback(newProduct);
+      const savedProduct = await newProduct.save();
+      console.log("New Product Added:", savedProduct);
+      return savedProduct;
     } catch (error) {
-      console.error(error);
-      callback(error, null);
+      console.error('Error adding product:', error);
+      throw error;
     }
   },
-
- 
-  getAllProducts: async (allproducts,callback) => {
+  getAllProducts: async (allproducts) => {
     try {
-
-      if(allproducts==true){
-      
-      const products = await Product.find().exec();
- 
-      let productsWithAverageRating = products.map((product) => ({
+      let products;
+      if (allproducts) {
+        products = await Product.find().exec();
+      } else {
+        products = await Product.find().limit(8).exec();
+      }
+      const productsWithAverageRating = products.map((product) => ({
         ...product.toObject(),
         averageRating: product.calculateAverageRating(),
       }));
-      callback(null, productsWithAverageRating);
-
-
-    }else{
-      const products = await Product.find().limit(8).exec();
-
-      let productsWithAverageRating = products.map((product) => ({
-        ...product.toObject(),
-        averageRating: product.calculateAverageRating(),
-      }));
-
-      callback(null, productsWithAverageRating);
-
-    }
-  
+      return productsWithAverageRating;
     } catch (error) {
-      console.error(error);
-      callback(error, null);
+      console.error('Error fetching products:', error);
+      throw error;
     }
   },
   

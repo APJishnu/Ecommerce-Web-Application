@@ -1,6 +1,18 @@
 <div class="container1">
       <form class="form" action="/signup" method="POST">
     <p class="title">User Signup </p>
+    <!-- user-signup.hbs -->
+{{#if userExist}}
+  <div class="alert alert-danger" role="alert">
+    User already exists. Please choose a different email or login.
+  </div>
+{{/if}}
+{{#if passwordMismatch}}
+  <div class="alert alert-danger" role="alert">
+    Passwords do not match. Please try again.
+  </div>
+{{/if}}
+
     <p class="message ">Signup now and get full access to our app. </p>
         <div class="flex">
         <label>
