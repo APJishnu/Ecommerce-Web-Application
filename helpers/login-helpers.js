@@ -5,8 +5,16 @@ const bcrypt = require('bcrypt');
 
 module.exports={
     SignUp: async(data,callback)=>{
+
+      try{
+      let userExist = await Login.findOne({ email: data.email });
+      if (userExist) {
+
+        callback('userExist')
+
+      } else {
         const pw = await bcrypt.hash(data.password,10)
-        try{
+        
 
             const newUser = new Login({
                 name:data.name,
@@ -23,7 +31,7 @@ module.exports={
             console.log(ObjectId);
             callback(ObjectId);
 
-
+          }
         }
         catch(error)
         {

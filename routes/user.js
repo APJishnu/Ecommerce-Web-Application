@@ -79,23 +79,28 @@ router.get('/login', (req, res) => {
 })
 router.post('/signup', async (req, res) => {
 
-  await loginHelper.SignUp(req.body, (result) => {
+  try {
+    // Add a new product
+    await loginHelper.SignUp(req.body, (result) => {
 
-    console.log(result)
+      if(result === 'userExist'){
+     
+        res.send('<script>alert("User already exists. Please choose a different email or login."); window.location.href="/signup"</script>');
+    
+    
+      }else{
+        const _id = result;
+        res.redirect('/login'); // Redirect to view all products after adding
+      }
 
-    if (result) {
-      res.redirect('/login');
+    });
+  } catch (error) {
+    console.error(error);
+    res.render('error', { message: 'Error adding product', error });
+  }
 
-    }
-    else {
-      res.redirect('/signup');
+});
 
-    }
-
-  })
-
-
-})
 router.get('/signup', (req, res) => {
 
   res.render('user/user-signup');
