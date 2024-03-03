@@ -212,7 +212,7 @@ getCartCount :  (userId)=>{
   return new Promise(async(resolve,reject)=>{
 
   let count = 0 ;
-  let cart = await Cart.findOne({user:ObjectId.createFromHexString(userId) }) 
+  let cart = await Cart.findOne({user:(userId) }) 
 
   if(cart){
     count = cart.products.length

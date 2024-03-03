@@ -1,27 +1,41 @@
-<div class="row">
-  <div class="col-md-6 m-auto">
-    <div class="container mt-5 pl-5">
-      <h2 class="mb-4">SIGNUP</h2>
-      <form action="/signup" method="post" class="d-flex flex-column">
+<div class="container1">
+      <form class="form" action="/signup" method="POST">
+    <p class="title">User Signup </p>
+    <p class="message ">Signup now and get full access to our app. </p>
+        <div class="flex">
+        <label>
+            <input required="" name="firstname" placeholder="" type="text" class="input">
+            <span>Firstname</span>
+        </label>
 
-        <div class="form-group">
-          <label for="exampleInputName1">Name</label>
-          <input type="text" class="form-control mt-2" id="exampleInputName1" placeholder="Enter Name" name="name">
-          
-        </div>
-        <div class="form-group mt-4">
-          <label for="exampleInputEmail1">Email address</label>
-          <input type="email" class="form-control mt-2" id="exampleInputEmail1" placeholder="Enter email" name="email">
-          
-        </div>
-        <div class="form-group mt-4">
-          <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control mt-2" id="exampleInputPassword1" placeholder="Password" name="password">
-        </div>
+        <label>
+            <input required="" name="lastname" placeholder="" type="text" class="input">
+            <span>Lastname</span>
+        </label>
+    </div>  
+            
+    <label>
+        <input required="" name="email" placeholder="" type="email" class="input">
+        <span>Email</span>
+    </label>
 
-        <a href="/login" class="mt-2">Already have an account?</a>
-        <button type="submit" class="btn btn-primary align-self-end">Signup</button>
-      </form>
+    <label>
+        <input required="" name="phone" placeholder="" type="Phone" class="input">
+        <span>Phone</span>
+    </label> 
+        
+    <label>
+        <input required="" name="password" placeholder="" type="password" class="input">
+        <span>Password</span>
+    </label>
+    <label>
+        <input required="" name="password_confirm" placeholder="" type="password" class="input">
+        <span>Confirm password</span>
+    </label>
+    <button class="submit">Submit</button>
+    <p class="signin">Already have an acount ? <a href="/login">Signin</a> </p>
+</form>
     </div>
   </div>
-</div>
+  </div>
+  

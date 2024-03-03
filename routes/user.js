@@ -73,13 +73,15 @@ router.get('/login', (req, res) => {
   } else {
 
 
-    res.render('user/user-login', { logErr: req.session.logErr });
+    res.render('user/user-login', { admin:false,login:true,logErr: req.session.logErr });
     req.session.logErr = false
   }
 })
 router.post('/signup', async (req, res) => {
 
   try {
+
+    if(req.body.password===req.body.password_confirm){
     // Add a new product
     await loginHelper.SignUp(req.body, (result) => {
 
@@ -94,6 +96,12 @@ router.post('/signup', async (req, res) => {
       }
 
     });
+  
+    }else{
+      res.send('<script>alert("Password Doesnt match."); window.location.href="/signup"</script>');
+    }
+
+    
   } catch (error) {
     console.error(error);
     res.render('error', { message: 'Error adding product', error });
@@ -103,35 +111,26 @@ router.post('/signup', async (req, res) => {
 
 router.get('/signup', (req, res) => {
 
-  res.render('user/user-signup');
+  res.render('user/user-signup',{admin:false,SignUp:true});
 })
 
 router.post('/login', async (req, res) => {
-
   try {
-    // Add a new product
-    await loginHelper.Login(req.body, (result) => {
-      console.log(result);
-      if (result) {
-
-        req.session.loggedIn = true,
-          req.session.user = result,
-
-
-          res.redirect('/');
-
+    // Attempt login
+    await loginHelper.Login(req.body, (user, errorMessage) => {
+      if (user) {
+        req.session.loggedIn = true;
+        req.session.user = user;
+        res.redirect('/');
       } else {
-
-        req.session.logErr = "invalid email and password",
-
-          res.redirect('/login');
+        req.session.logErr = errorMessage;
+        res.redirect('/login');
       }
     });
   } catch (error) {
     console.error(error);
-    res.render('error', { message: 'Error adding product', error });
+    res.render('error', { message: 'Error during login', error });
   }
-
 });
 
 router.get('/logout', (req, res) => {

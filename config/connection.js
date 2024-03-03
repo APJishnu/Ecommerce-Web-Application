@@ -8,11 +8,20 @@ require('dotenv').config();
 
 console.log(process.env.MONGODB_URI);
 
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true, // Ensures indexes are created
+  poolSize: 10, // Maximum number of sockets in the pool
+  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+  connectTimeoutMS: 10000 // Close connection attempts after 10 seconds
+};
+
 
 mongoose.connect(process.env.MONGODB_URI, {
   
 
-});
+}, options);
 
 const db = mongoose.connection;
 
@@ -99,18 +108,28 @@ ProductSchema.methods.calculateAverageRating = function () {
 
 const LoginSchema = new mongoose.Schema({
 
-  name:{
+  
+  firstname:{
     type:String,
     required:true
-  },
-  email:{
+},  
+lastname:{
     type:String,
     required:true
-  },
-  password:{
+},  
+password:{
     type:String,
     required:true
-  },
+},
+email:{
+    type:String,
+    required:true
+},  
+
+phone:{
+    type:String,
+    required:true
+},
 });
 
 const cartSchema = new mongoose.Schema({

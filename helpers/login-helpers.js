@@ -17,9 +17,11 @@ module.exports={
         
 
             const newUser = new Login({
-                name:data.name,
-                email:data.email,
-                password:pw,
+              firstname: data.firstname,
+              lastname: data.lastname,
+              password: pw,
+              email: data.email,
+              phone: data.phone,
             });
 
             await newUser.save();
@@ -40,28 +42,24 @@ module.exports={
         }
     },
 
-    Login: async (values,callback) => {
-       
-  
-            const check = await Login.findOne({ email: values.email });
-            
-            console.log("1..."+values.password);
-            console.log("2..."+check.password);
-            
-            if (check) {
-              const isUser = await bcrypt.compare(values.password, check.password);
-              if(isUser){
-                callback(check)
-              }
-             else {
-              
-                callback(null);
-              }
-            } else{
-              callback(null)
-            }
-         
+    Login: async (values, callback) => {
+  try {
+    const user = await Login.findOne({ email: values.email });
+    if (user) {
+      const isPasswordValid = await bcrypt.compare(values.password, user.password);
+      if (isPasswordValid) {
+        callback(user); // Login successful
+      } else {
+        callback(null, "Incorrect password"); // Incorrect password
+      }
+    } else {
+      callback(null, "User not found"); // User not found
     }
+  } catch (error) {
+    console.error(error);
+    callback(null, "An error occurred during login"); // Error occurred
+  }
+}
 
 
 

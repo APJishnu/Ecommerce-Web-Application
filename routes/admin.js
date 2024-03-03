@@ -108,4 +108,9 @@ router.post('/products/add-rating/:productId', async (req, res) => {
 });
 
 
+router.get('adminLogin',(req,res)=>{
+
+  
+})
+
 module.exports = router;  
