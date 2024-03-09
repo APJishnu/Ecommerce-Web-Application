@@ -114,30 +114,26 @@ router.get('/adminLogin', async (req, res) => {
 
   res.render('admin/admin-login', { admin: true })
 });
-
 router.post('/adminLogin', async (req, res) => {
   const admindata = req.body;
 
-  if(admindata.pw === null){
-         res.send('<script>alert("An error occurred during login. Please try again later."); window.location.href="/admin/adminLogin"</script>');
-  }else{
-
-    await adminLogin.checkAdmin(admindata, (result, error) => {
-      if (result) {
-        req.session.adminLoggin = true;
-        req.session.admin = admindata;
-        res.redirect('/admin/');
-      } else {
-        if (error) {
-          console.error(error);
-          res.send('<script>alert("' + error + '"); window.location.href="/admin/adminLogin"</script>');
-        } else {
-          res.send('<script>alert("An error occurred during login. Please try again later."); window.location.href="/admin/adminLogin"</script>');
-        }
-      }
-    });
+  if (!admindata.pw) {
+    return res.send('<script>alert("An error occurred during login. Please try again later."); window.location.href="/admin/adminLogin"</script>');
   }
 
-  
+  try {
+    const result = await adminLogin.checkAdmin(admindata);
+    if (result) {
+      req.session.adminLoggin = true;
+      req.session.admin = admindata;
+      return res.redirect('/admin/');
+    } else {
+      throw new Error('Invalid credentials');
+    }
+  } catch (error) {
+    console.error(error);
+    return res.send('<script>alert("' + error.message + '"); window.location.href="/admin/adminLogin"</script>');
+  }
 });
+
 module.exports = router;  
