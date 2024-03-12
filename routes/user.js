@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 const productHelper = require('../helpers/product-helpers');
 const loginHelper = require('../helpers/login-helpers');
-const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
+
+
 
 const verifyLogin = (req, res, next) => {
   if (req.session.loggedIn) {
@@ -100,14 +100,12 @@ router.post('/login', async (req, res) => {
     if (user) {
       req.session.loggedIn = true;
       req.session.user = user;
-      res.redirect('/');
-    } else {
-      req.session.logErr = "Invalid email or password";
-      res.redirect('/login'); // Redirect to login page with error message
+      return res.redirect('/');
+    
     }
   } catch (error) {
     console.error(error);
-    res.render('error', { message: 'Error during login', error });
+   return res.render('error', { message: 'Error during login', error });
   }
 });
 
