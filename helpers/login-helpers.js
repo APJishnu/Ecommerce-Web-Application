@@ -43,24 +43,27 @@ module.exports={
         }
     },
 
-    Login: async (values, callback) => {
+    // login-helpers.js
+
+Login: async (values) => {
   try {
     const user = await Login.findOne({ email: values.email });
     if (user) {
       const isPasswordValid = await bcrypt.compare(values.password, user.password);
       if (isPasswordValid) {
-        callback(user); // Login successful
+        return user; // Return user if login successful
       } else {
-        callback(null, "Incorrect password"); // Incorrect password
+        throw new Error("Incorrect password"); // Throw error if password is incorrect
       }
     } else {
-      callback(null, "User not found"); // User not found
+      throw new Error("User not found"); // Throw error if user not found
     }
   } catch (error) {
     console.error(error);
-    callback(null, "An error occurred during login"); // Error occurred
+    throw new Error("An error occurred during login"); // Throw error for any other errors
   }
 },
+
 
 checkAdmin: async (admindata) => { // Remove the callback parameter
   try {

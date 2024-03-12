@@ -93,29 +93,26 @@ router.get('/signup', (req, res) => {
 
   res.render('user/user-signup',{admin:false,SignUp:true});
 })
+// routes.js
+
 router.post('/login', async (req, res) => {
   try {
     // Attempt login
-    await loginHelper.Login(req.body, (user, errorMessage) => {
-      if (user) {
-        req.session.loggedIn = true;
-        req.session.user = user;
-      } else {
-        req.session.logErr = errorMessage;
-      }
-    });
-
-    // Handle redirection outside of the callback function
-    if (req.session.loggedIn) {
+    const user = await loginHelper.Login(req.body);
+    if (user) {
+      req.session.loggedIn = true;
+      req.session.user = user;
       res.redirect('/');
     } else {
-      res.redirect('/login');
+      req.session.logErr = "Invalid email or password";
+      res.redirect('/login'); // Redirect to login page with error message
     }
   } catch (error) {
     console.error(error);
     res.render('error', { message: 'Error during login', error });
   }
 });
+
 
 
 router.get('/logout', (req, res) => {
