@@ -93,7 +93,6 @@ router.get('/signup', (req, res) => {
 
   res.render('user/user-signup',{admin:false,SignUp:true});
 })
-
 router.post('/login', async (req, res) => {
   try {
     // Attempt login
@@ -101,17 +100,23 @@ router.post('/login', async (req, res) => {
       if (user) {
         req.session.loggedIn = true;
         req.session.user = user;
-        res.redirect('/');
       } else {
         req.session.logErr = errorMessage;
-        res.redirect('/login');
       }
     });
+
+    // Handle redirection outside of the callback function
+    if (req.session.loggedIn) {
+      res.redirect('/');
+    } else {
+      res.redirect('/login');
+    }
   } catch (error) {
     console.error(error);
     res.render('error', { message: 'Error during login', error });
   }
 });
+
 
 router.get('/logout', (req, res) => {
   req.session.destroy();
