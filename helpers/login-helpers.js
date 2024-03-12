@@ -62,25 +62,25 @@ module.exports={
   }
 },
 
-checkAdmin: async (admindata) => {
+checkAdmin: async (admindata) => { // Remove the callback parameter
   try {
     const check = await AdminLogin.findOne({ email: admindata.email });
-
     if (check) {
-      const isadminPasswordValid = await bcrypt.compare(admindata.pw, check.password);
-      if (isadminPasswordValid) {
-        return check;
+      const isValidPw = await bcrypt.compare(admindata.pw, check.password);
+      if (isValidPw) {
+        return true; // Return true if the password is valid
       } else {
-        throw new Error("Incorrect password");
+        return false; // Return false if the password is invalid
       }
     } else {
-      throw new Error("Incorrect Email Address");
+      return false; // Return false if the email is incorrect
     }
   } catch (error) {
     console.error(error);
-    throw error;
+    throw error; // Throw the error if any exception occurs
   }
 },
+
 
 
 };

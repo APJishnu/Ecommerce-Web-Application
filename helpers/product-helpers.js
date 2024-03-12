@@ -12,24 +12,25 @@ var instance = new Razorpay({
 });
 
 module.exports = {
-  addProduct: async (product, img) => {
-    try {
-      const newProduct = new Product({
-        name: product.name,
-        category: product.category,
-        price: product.price,
-        description: product.description,
-        image: img.filename, // Use the filename of the uploaded image
-      });
+// Modify the addProduct function to return a promise
+addProduct: async (product, img) => {
+  try {
+    const newProduct = new Product({
+      name: product.name,
+      category: product.category,
+      price: product.price,
+      description: product.description,
+      image: img.filename, // Use the filename of the uploaded image
+    });
 
-      const savedProduct = await newProduct.save();
-      console.log("New Product Added:", savedProduct);
-      return savedProduct;
-    } catch (error) {
-      console.error('Error adding product:', error);
-      throw error;
-    }
-  },
+    const savedProduct = await newProduct.save();
+    console.log("New Product Added:", savedProduct);
+    return savedProduct._id; // Return the ID of the saved product
+  } catch (error) {
+    console.error('Error adding product:', error);
+    throw error;
+  }
+},
   getAllProducts: async (allproducts) => {
     try {
       let products;

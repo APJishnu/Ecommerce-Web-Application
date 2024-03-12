@@ -8,20 +8,12 @@ require('dotenv').config();
 
 console.log(process.env.MONGODB_URI);
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true, // Ensures indexes are created
-  poolSize: 10, // Maximum number of sockets in the pool
-  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-  connectTimeoutMS: 10000 // Close connection attempts after 10 seconds
-};
 
 
 mongoose.connect(process.env.MONGODB_URI, {
   
 
-}, options);
+});
 
 const db = mongoose.connection;
 
@@ -174,17 +166,18 @@ const AdminLoginSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    default: 'admin@gmail.com' // Default email value
+    // Default email value
   },
   password: {
     type: String,
     required: true,
-    default: 'admin@123' // Default password value
+    // Default password value
   }
 });
 
 
 
+     
 // const pw = await bcrypt.hash('admin@123',10)
 // const newAdminLogin = new AdminLogin({
 //   email: 'admin@gmail.com', // Custom email value
@@ -199,7 +192,6 @@ const AdminLoginSchema = new mongoose.Schema({
 //   .catch((error) => {
 //     console.error('Error saving document:', error);
 //   });
-
 
 
 const Product=new mongoose.model('Product',ProductSchema)

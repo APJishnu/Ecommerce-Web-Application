@@ -5,28 +5,19 @@ const adminLogin = require('../helpers/login-helpers');
 const upload = require('../helpers/multer');
 
 
-/* GET users listing. */
-router.get('/', function(req, res ,next) {
+router.get('/',async(req,res)=>{
   let allproducts = true;
-  productHelper.getAllProducts(allproducts,(error,products) => {
-    if (error) {
-      // Handle the error, e.g., render an error page
-      res.render('error', { message: 'Error fetching products', error });
-    } else {
-      res.render('admin/view-products', { admin: true, products });
-    }
-  });
-});
+  let products = await productHelper.getAllProducts(allproducts);
+  console.log(products)
+  
+    res.render('admin/view-products',{admin:true,products:products})
+ 
+})
 
 router.get('/add-products',async (req, res) => {
   
-
- 
     res.render('admin/add-products',{ admin: true});
 
- 
-
-  
   
 });
 
@@ -36,11 +27,11 @@ router.post('/add-products', upload.single('image'), async (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    await productHelper.addProduct(req.body, req.file, (result) => {
-      const productId = result;
-      
-      res.redirect('/admin');
-    });
+    // Call the addProduct function and await its result
+    const productId = await productHelper.addProduct(req.body, req.file);
+
+    // Redirect to admin dashboard after adding the product
+    res.redirect('/admin/');
   } catch (error) {
     console.error(error);
     res.render('error', { message: 'Error adding product', error });
@@ -110,30 +101,26 @@ router.post('/products/add-rating/:productId', async (req, res) => {
 
 
 
-router.get('/adminLogin', async (req, res) => {
+
+router.get('/admin-login', async (req, res) => {
 
   res.render('admin/admin-login', { admin: true })
 });
-router.post('/adminLogin', async (req, res) => {
+
+router.post('/admin-login', async (req, res) => {
   const admindata = req.body;
 
-  if (!admindata.pw) {
-    return res.send('<script>alert("An error occurred during login. Please try again later."); window.location.href="/admin/adminLogin"</script>');
-  }
-
+  // Use try-catch to handle errors
   try {
-    const result = await adminLogin.checkAdmin(admindata);
+    const result = await adminLogin.checkAdmin(admindata); // Call checkAdmin function without the callback
     if (result) {
-      req.session.adminLoggin = true;
-      req.session.admin = admindata;
-      return res.redirect('/admin/');
+      res.redirect('/admin/');
     } else {
-      throw new Error('Invalid credentials');
+      res.send('<script>alert("Incorrect Email Address or Password."); window.location.href="/admin/admin-login"</script>');
     }
   } catch (error) {
     console.error(error);
-    return res.send('<script>alert("' + error.message + '"); window.location.href="/admin/adminLogin"</script>');
+    res.send('<script>alert("An error occurred during login. Please try again later."); window.location.href="/admin/admin-login"</script>');
   }
 });
-
 module.exports = router;  

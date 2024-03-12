@@ -3,7 +3,6 @@ var router = express.Router();
 const productHelper = require('../helpers/product-helpers');
 const loginHelper = require('../helpers/login-helpers');
 const mongoose = require('mongoose');
-const productHelpers = require('../helpers/product-helpers');
 const ObjectId = mongoose.Types.ObjectId;
 
 const verifyLogin = (req, res, next) => {
