@@ -26,12 +26,17 @@ router.get('/', async (req, res, next) => {
       console.log("cartcount", count);
     }
     let products = await productHelper.getAllProducts(allproducts);
-    res.render('user/view-products', { admin: false, products, user, count, showAllproducts });
+    if (!res.headersSent) { // Check if headers have been sent
+      res.render('user/view-products', { admin: false, products, user, count, showAllproducts });
+    }
   } catch (error) {
     console.error('Error in / route:', error);
-    res.render('error', { message: 'Error fetching products', error });
+    if (!res.headersSent) { // Check if headers have been sent
+      res.render('error', { message: 'Error fetching products', error });
+    }
   }
 });
+
 
 router.get('/all-products', async (req, res) => {
   try {
