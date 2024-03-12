@@ -59,12 +59,10 @@ router.get('/all-products', async (req, res) => {
 
 
 router.get('/login', (req, res) => {
-  if (req.session.loggedIn) {
-    res.redirect('/');
-  } else {
+  
     res.render('user/user-login', { admin: false, login: true, logErr: req.session.logErr });
     req.session.logErr = false;
-  }
+  
 });
 
 router.post('/signup', async (req, res) => {
@@ -142,18 +140,17 @@ router.get('/cart', verifyLogin, async (req, res) => {
 
 
 router.get('/add-to-cart/:id', verifyLogin, async (req, res) => {
-  if (req.session.loggedIn) {
+  
 
-    await productHelper.addToCart(req.params.id, req.session.user._id, (result) => {
-      res.json({ status: true });
-    });
-  }
-  else {
-    res.redirect('/login');
-  }
+     try {
+      const userCart = await productHelper.addToCart(req.params.id, req.session.user._id);
+      res.json({ status: true, userCart });
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      res.status(500).json({ status: false, error: 'Error adding to cart' });
+    }
 
-
-
+  
 });
 
 

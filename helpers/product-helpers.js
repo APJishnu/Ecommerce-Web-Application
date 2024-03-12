@@ -101,45 +101,44 @@ addProduct: async (product, img) => {
   },
 
 
-
-addToCart :async (proId, userId, callback) => {
-  try {
-    let userCart = await Cart.findOne({ user: userId });
-
-    if (userCart) {
-      let proExist = userCart.products.find(products => products.item.equals(proId));
-
-      if (proExist) {
-        // If the product exists in the cart, increment its quantity
-        await Cart.updateOne(
-          { user: userId, 'products.item': proId },
-          { $inc: { 'products.$.quantity': 1 } }
-        );
+  addToCart: async (proId, userId) => {
+    try {
+      let userCart = await Cart.findOne({ user: userId });
+  
+      if (userCart) {
+        let proExist = userCart.products.find(products => products.item.equals(proId));
+  
+        if (proExist) {
+          // If the product exists in the cart, increment its quantity
+          await Cart.updateOne(
+            { user: userId, 'products.item': proId },
+            { $inc: { 'products.$.quantity': 1 } }
+          );
+        } else {
+          // If the product doesn't exist in the cart, add it with quantity 1
+          await Cart.updateOne(
+            { user: userId },
+            { $push: { products: { item: proId, quantity: 1 } } }
+          );
+        }
+  
+        userCart = await Cart.findOne({ user: userId });
+        return userCart;
       } else {
-        // If the product doesn't exist in the cart, add it with quantity 1
-        await Cart.updateOne(
-          { user: userId },
-          { $push: { products: { item: proId, quantity: 1 } } }
-        );
+        // If the user doesn't have a cart yet, create a new cart with the product
+        await Cart.insertMany({
+          user: userId,
+          products: [{ item: proId, quantity: 1 }],
+        });
+        userCart = await Cart.findOne({ user: userId });
+        return userCart;
       }
-
-      userCart = await Cart.findOne({ user: userId });
-      callback(userCart);
-    } else {
-      // If the user doesn't have a cart yet, create a new cart with the product
-      await Cart.insertMany({
-        user: userId,
-        products: [{ item: proId, quantity: 1 }],
-      });
-      userCart = await Cart.findOne({ user: userId });
-      callback(userCart);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      throw error;
     }
-  } catch (error) {
-    console.error('Error adding to cart:', error);
-    callback(null, error);
-  }
-},
-
+  },
+  
 
 getCartProducts: (userId) => {
   return new Promise(async (resolve, reject) => {
