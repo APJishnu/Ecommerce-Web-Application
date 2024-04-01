@@ -101,11 +101,13 @@ router.post('/login', async (req, res) => {
       req.session.loggedIn = true;
       req.session.user = user;
       return res.redirect('/');
-    
+    } else {
+      req.session.logErr = "Invalid email or password";
+      res.redirect('/login'); // Redirect to login page with error message
     }
   } catch (error) {
     console.error(error);
-   return res.render('error', { message: 'Error during login', error });
+    res.render('error', { message: 'Error during login', error });
   }
 });
 

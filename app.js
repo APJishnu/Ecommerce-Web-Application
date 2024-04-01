@@ -6,6 +6,7 @@ var logger = require('morgan');
 const exphbs=require('express-handlebars');
 const { db }= require('./config/connection');
 const session = require('express-session');
+require('dotenv').config();
 
 const MongoStore = require('connect-mongo');
 
@@ -37,7 +38,7 @@ app.use(
     saveUninitialized: false,
     cookie: { maxAge: 600000 },
     store: new MongoStore({ 
-      mongoUrl: 'mongodb://localhost:27017/sessionstore',
+      mongoUrl: process.env.MONGODB_SESSION_URI,
       ttl: 14 * 24 * 60 * 60, // 2 weeks in seconds
     }),
   })
